@@ -51,7 +51,7 @@ void Barrier::wait(){
   }
   //val is equal to the value of the counter before increment
   int val = counter[idx].fetch_add(1);
-  
+
   //if wait has been called at least thread_count many times
   if( val >= thread_count-1){
     counter[idx].store(0); //counter for current idx has reached its max
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
       }else{
         kappa = atof(argv[3]);
         if (argc<5){
-          alpha = 1.0; 
+          alpha = 1.0;
         }else{
           alpha = atof(argv[4]);
           if (argc<6){
@@ -176,7 +176,7 @@ int main(int argc, char *argv[]) {
   update = new double[num_workers*max_n];
   memset(update, 0.0, sizeof(double) * n_thread*max_n);
   double start_time = get_wall_time();
-  
+
 
   std::vector<std::thread> mythreads;
   Barrier computation_barrier(num_workers);
@@ -218,7 +218,7 @@ void sync_worker(int rank, Barrier& Computation_Barrier, Barrier& Cache_Update_B
   int num_var = range_2.end - range_2.start;
   int index = 0;
   double temp;
-  
+
   for (int i = 0; i < max_iter; i++) {
     for (int j = 0; j < num_cords; j++) {
       index = j + range.start;
@@ -242,10 +242,9 @@ void sync_worker(int rank, Barrier& Computation_Barrier, Barrier& Cache_Update_B
       index = j + range_2.start;
       for (int k = 0;k<num_workers;k++) {
         s[index] += update[index+k*max_n];
+        update[index+k*max_n] = 0;
       }
     }
     Cache_Update_Barrier.wait();
   }
 }
-
-
